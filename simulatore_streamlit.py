@@ -14,38 +14,31 @@ ambiguita = st.slider("Ambiguità (a)", 0, 10, 5)
 giorni = st.slider("Giorni di propagazione", 3, 15, 7)
 mitica = st.checkbox("Forza modalità mitica se R = 0")
 
-# === Funzione per generare narrazione ===
-def genera_narrazione(R):
-    if R == 0:
-        return "🫥 Nessuno ne parla. Tutto tace."
-    elif R < 20:
-        return "🤫 Si dice che qualcosa stia accadendo, ma non è chiaro cosa."
-    elif R < 40:
-        return "🤨 Si dice che ci sia sotto qualcosa. La voce si fa insistente."
-    elif R < 50:
-        return "😶‍🌫️ Si dice che nessuno dica la verità."
-    elif R < 60:
-        return "🌀 Si dice che tutto sia solo la punta dell’iceberg."
-    elif R < 70:
-        return "🧩 Si dice che qualcuno stia nascondendo qualcosa di grosso."
-    elif R < 90:
-        return "🗣️ Si dice che tutti inizino a parlarne, ma ognuno ha una versione diversa."
-    else:
-        return "🔥 Si dice che sia ormai fuori controllo. La voce diventa leggenda."
+# === Frasi narrative possibili ===
+frasi_possibili = [
+    "😐 Si dice che nessuno dica la verità.",
+    "😏 Si dice che ci sia sotto qualcosa. La voce si fa insistente.",
+    "🧊 Si dice che è solo la punta dell'iceberg. La voce si propaga.",
+    "🕵️ Si dice che qualcuno ha interesse a insabbiare tutto. La voce si propaga.",
+    "🧙‍♂️ Qualcuno parla di forze occulte. Nessuno può più fermarla.",
+    "🌀 La voce si trasforma in leggenda. Nessuno sa dove inizia e dove finisce.",
+]
 
 # === Simulazione della propagazione ===
 st.markdown("""---\n🧵 **Narrazione Giorno per Giorno**""")
+R_valori = []
+
 for giorno in range(1, giorni + 1):
     if R := importanza * ambiguita:
         R_giorno = R + random.randint(-5, 5)
     else:
         R_giorno = 0 if not mitica else random.randint(40, 80)
 
-    narrazione = genera_narrazione(R_giorno)
-    st.markdown(f"**Giorno {giorno}:** R={R_giorno}. {narrazione}")
+    frase_del_giorno = frasi_possibili[(giorno - 1) % len(frasi_possibili)]
+    st.markdown(f"**Giorno {giorno}:** R={R_giorno}. {frase_del_giorno}")
+    R_valori.append(R_giorno)
 
 # === Grafico ===
-R_valori = [(importanza * ambiguita + random.randint(-5, 5)) if (importanza * ambiguita) else (0 if not mitica else random.randint(40, 80)) for _ in range(giorni)]
 fig, ax = plt.subplots()
 ax.plot(range(1, giorni + 1), R_valori, marker='o')
 ax.set_title("Intensità della Voce nel Tempo")
