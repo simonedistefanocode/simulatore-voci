@@ -1,65 +1,54 @@
-
 import streamlit as st
 import matplotlib.pyplot as plt
 import random
 
 st.set_page_config(page_title="Simulatore di Voci", layout="centered")
 
-st.title("🧠 Simulatore Narrativo di Voci (Shibutani R = i × a)")
-st.markdown("Simula la propagazione di una voce in base all'importanza (i) e all'ambiguità (a)")
+st.title("🧠 Simulatore Narrativo di Voci\n(Shibutani R = i × a)")
+st.write("Simula la propagazione di una voce in base all'importanza (i) e all'ambiguità (a)")
 
-# Input utente
-titolo = st.text_input("Titolo della voce", "Gli alieni sono tra noi")
-i = st.slider("Importanza (i)", 0, 10, 5)
-a = st.slider("Ambiguità (a)", 0, 10, 5)
+# === Input dell'utente ===
+titolo_voce = st.text_input("Titolo della voce", "Gli alieni sono tra noi")
+importanza = st.slider("Importanza (i)", 0, 10, 5)
+ambiguita = st.slider("Ambiguità (a)", 0, 10, 5)
 giorni = st.slider("Giorni di propagazione", 3, 15, 7)
-modalita_mito = st.checkbox("Forza modalità mitica se R = 0")
+mitica = st.checkbox("Forza modalità mitica se R = 0")
 
-# Frasi leggendarie
-miti = [
-    "Gli alieni sono tra noi da anni.",
-    "Elvis è ancora vivo, nascosto in Argentina.",
-    "Lady Diana non è morta: è tutto un complotto.",
-    "Il virus è stato creato in laboratorio.",
-    "L'uomo non è mai andato sulla Luna."
-]
-
-# Simulazione
-R_values = []
-narrativa = []
-
-for giorno in range(1, giorni + 1):
-    R = i * a
-    R_values.append(R)
-
-    if R == 0 and modalita_mito:
-        frase = f"[MITO] {random.choice(miti)}"
-    elif R >= 40:
-        frase = f"Giorno {giorno}: R={R}. Si dice che nessuno dice la verità."
-    elif R >= 25:
-        frase = f"Giorno {giorno}: R={R}. Si vocifera che ci siano documenti segreti."
-    elif R > 0:
-        frase = f"Giorno {giorno}: R={R}. Qualcuno ha dei sospetti..."
+# === Funzione per generare narrazione ===
+def genera_narrazione(R):
+    if R == 0:
+        return "🫥 Nessuno ne parla. Tutto tace."
+    elif R < 20:
+        return "🤫 Si dice che qualcosa stia accadendo, ma non è chiaro cosa."
+    elif R < 40:
+        return "🤨 Si dice che ci sia sotto qualcosa. La voce si fa insistente."
+    elif R < 50:
+        return "😶‍🌫️ Si dice che nessuno dica la verità."
+    elif R < 60:
+        return "🌀 Si dice che tutto sia solo la punta dell’iceberg."
+    elif R < 70:
+        return "🧩 Si dice che qualcuno stia nascondendo qualcosa di grosso."
+    elif R < 90:
+        return "🗣️ Si dice che tutti inizino a parlarne, ma ognuno ha una versione diversa."
     else:
-        frase = f"Giorno {giorno}: R={R}. Nessuna voce significativa."
+        return "🔥 Si dice che sia ormai fuori controllo. La voce diventa leggenda."
 
-    narrativa.append(frase)
-    i += random.choice([-1, 0, 1])
-    a += random.choice([-1, 0, 1])
-    i = max(0, min(10, i))
-    a = max(0, min(10, a))
+# === Simulazione della propagazione ===
+st.markdown("""---\n🧵 **Narrazione Giorno per Giorno**""")
+for giorno in range(1, giorni + 1):
+    if R := importanza * ambiguita:
+        R_giorno = R + random.randint(-5, 5)
+    else:
+        R_giorno = 0 if not mitica else random.randint(40, 80)
 
-# Output narrativo
-st.subheader("📜 Narrazione Giorno per Giorno")
-for riga in narrativa:
-    st.markdown(f"- {riga}")
+    narrazione = genera_narrazione(R_giorno)
+    st.markdown(f"**Giorno {giorno}:** R={R_giorno}. {narrazione}")
 
-# Grafico
-st.subheader("📈 Propagazione della Voce")
+# === Grafico ===
+R_valori = [(importanza * ambiguita + random.randint(-5, 5)) if (importanza * ambiguita) else (0 if not mitica else random.randint(40, 80)) for _ in range(giorni)]
 fig, ax = plt.subplots()
-ax.plot(range(1, giorni + 1), R_values, marker='o')
+ax.plot(range(1, giorni + 1), R_valori, marker='o')
+ax.set_title("Intensità della Voce nel Tempo")
 ax.set_xlabel("Giorni")
 ax.set_ylabel("R = i × a")
-ax.set_title("Andamento della voce nel tempo")
-ax.grid(True)
 st.pyplot(fig)
