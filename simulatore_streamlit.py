@@ -14,40 +14,60 @@ ambiguita = st.slider("Ambiguità (a)", 0, 10, 5)
 giorni = st.slider("Giorni di propagazione", 3, 15, 7)
 mitica = st.checkbox("Forza modalità mitica se R = 0")
 
-# === Frasi narrative dinamiche ===
-frasi_base = [
-    "😐 Si dice che nessuno dica la verità.",
-    "😏 Si dice che ci sia sotto qualcosa. La voce si fa insistente.",
-    "🔊 Si dice che sta circolando, ma nessuno sa da dove provenga.",
-    "🧙‍♂️ Nessuno conferma, ma tutti ne parlano.",
-    "🦜 Qualcuno dice di aver visto cose strane. Nessuno sa cosa pensare.",
-    "🧐 Alcuni dicono che è tutto vero, altri che è una montatura.",
-    "🚫 I media tacciono. La voce cresce tra la gente.",
-    "🧩 Si dice che sia solo la punta dell'iceberg.",
-    "🕵️‍♂️ Si dice che qualcuno ha interesse a insabbiare tutto.",
-    "🦝 Qualcuno parla di forze occulte. Nessuno può più fermarla.",
-    "🛰️ Tutti ne parlano, ma ognuno ha una versione diversa.",
-    "🔥 La voce si è trasformata in leggenda."
-]
+# === Funzione per generare narrazione ===
+def genera_narrazione(R):
+    if R == 0:
+        return "🫥 Nessuno ne parla. Tutto tace."
+    elif R < 20:
+        return "🤫 Si dice che qualcosa stia accadendo, ma non è chiaro cosa."
+    elif R < 40:
+        return "🤨 Si dice che ci sia sotto qualcosa. La voce si fa insistente."
+    elif R < 50:
+        return "😶‍🌫️ Si dice che nessuno dica la verità."
+    elif R < 60:
+        return "🌀 Si dice che tutto sia solo la punta dell’iceberg."
+    elif R < 70:
+        return "🧩 Si dice che qualcuno stia nascondendo qualcosa di grosso."
+    elif R < 90:
+        return "🗣️ Si dice che tutti inizino a parlarne, ma ognuno ha una versione diversa."
+    else:
+        return "🔥 Si dice che sia ormai fuori controllo. La voce diventa leggenda."
 
 # === Simulazione della propagazione ===
 st.markdown("""---\n🧵 **Narrazione Giorno per Giorno**""")
-R_valori = []
-
 for giorno in range(1, giorni + 1):
     if R := importanza * ambiguita:
         R_giorno = R + random.randint(-5, 5)
     else:
         R_giorno = 0 if not mitica else random.randint(40, 80)
 
-    frase_del_giorno = frasi_base[(giorno - 1) % len(frasi_base)]
-    st.markdown(f"**Giorno {giorno}:** R={R_giorno}. {frase_del_giorno}")
-    R_valori.append(R_giorno)
+    narrazione = genera_narrazione(R_giorno)
+    st.markdown(f"**Giorno {giorno}:** R={R_giorno}. {narrazione}")
 
 # === Grafico ===
+R_valori = [(importanza * ambiguita + random.randint(-5, 5)) if (importanza * ambiguita) else (0 if not mitica else random.randint(40, 80)) for _ in range(giorni)]
 fig, ax = plt.subplots()
 ax.plot(range(1, giorni + 1), R_valori, marker='o')
 ax.set_title("Intensità della Voce nel Tempo")
 ax.set_xlabel("Giorni")
 ax.set_ylabel("R = i × a")
 st.pyplot(fig)
+
+# === Sezione: Generatore di rumor da notizia reale ===
+st.markdown("---")
+attiva_rumor = st.checkbox("Attiva modalità crea rumor da notizia reale")
+
+if attiva_rumor:
+    st.subheader("🧪 Generatore di rumor da notizia reale")
+    notizia_reale = st.text_area("Scrivi qui la notizia del giorno", "Oggi è stato annunciato un nuovo piano energetico nazionale basato sul nucleare.")
+
+    if st.button("Genera rumor plausibile ma falso"):
+        # Logica semplice simulata per esempio
+        falso_rumor = "Si dice che dietro il nuovo piano energetico ci sia un accordo segreto con aziende private estere per il controllo delle risorse nazionali."
+        contenuto_social = f"🚨 {falso_rumor} Alcuni documenti trapelati lascerebbero intendere una regia occulta dietro questa decisione. E se fosse tutto già deciso da tempo? #energia #segreti #potere"
+
+        st.markdown("### 💬 Rumor plausibile generato:")
+        st.write(falso_rumor)
+
+        st.markdown("### 📣 Contenuto social suggerito:")
+        st.info(contenuto_social)
