@@ -14,14 +14,20 @@ ambiguita = st.slider("Ambiguità (a)", 0, 10, 5)
 giorni = st.slider("Giorni di propagazione", 3, 15, 7)
 mitica = st.checkbox("Forza modalità mitica se R = 0")
 
-# === Frasi narrative possibili ===
-frasi_possibili = [
+# === Frasi narrative dinamiche ===
+frasi_base = [
     "😐 Si dice che nessuno dica la verità.",
     "😏 Si dice che ci sia sotto qualcosa. La voce si fa insistente.",
-    "🧊 Si dice che è solo la punta dell'iceberg. La voce si propaga.",
-    "🕵️ Si dice che qualcuno ha interesse a insabbiare tutto. La voce si propaga.",
-    "🧙‍♂️ Qualcuno parla di forze occulte. Nessuno può più fermarla.",
-    "🌀 La voce si trasforma in leggenda. Nessuno sa dove inizia e dove finisce.",
+    "🔊 Si dice che sta circolando, ma nessuno sa da dove provenga.",
+    "🧙‍♂️ Nessuno conferma, ma tutti ne parlano.",
+    "🦜 Qualcuno dice di aver visto cose strane. Nessuno sa cosa pensare.",
+    "🧐 Alcuni dicono che è tutto vero, altri che è una montatura.",
+    "🚫 I media tacciono. La voce cresce tra la gente.",
+    "🧩 Si dice che sia solo la punta dell'iceberg.",
+    "🕵️‍♂️ Si dice che qualcuno ha interesse a insabbiare tutto.",
+    "🦝 Qualcuno parla di forze occulte. Nessuno può più fermarla.",
+    "🛰️ Tutti ne parlano, ma ognuno ha una versione diversa.",
+    "🔥 La voce si è trasformata in leggenda."
 ]
 
 # === Simulazione della propagazione ===
@@ -34,7 +40,7 @@ for giorno in range(1, giorni + 1):
     else:
         R_giorno = 0 if not mitica else random.randint(40, 80)
 
-    frase_del_giorno = frasi_possibili[(giorno - 1) % len(frasi_possibili)]
+    frase_del_giorno = frasi_base[(giorno - 1) % len(frasi_base)]
     st.markdown(f"**Giorno {giorno}:** R={R_giorno}. {frase_del_giorno}")
     R_valori.append(R_giorno)
 
