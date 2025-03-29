@@ -53,15 +53,14 @@ ax.set_xlabel("Giorni")
 ax.set_ylabel("R = i × a")
 st.pyplot(fig)
 
-# === Sezione: Generatore di rumor da notizia reale ===
+# === Generatore di rumor da notizia reale ===
 st.markdown("---")
 attiva_rumor = st.checkbox("Attiva modalità crea rumor da notizia reale")
 
-# === Funzione per generare rumor plausibile ===
 def genera_rumor(notizia):
     notizia = notizia.lower()
     if any(kw in notizia for kw in ["energia", "clima", "nucleare"]):
-        return "Si dice che dietro il nuovo piano energetico ci sia un accordo segreto con aziende estere per il controllo delle risorse."
+        return "Si dice che dietro il piano energetico ci sia un accordo segreto con aziende estere per il controllo delle risorse."
     elif any(kw in notizia for kw in ["governo", "politica", "decreto", "ministro"]):
         return "Si dice che alcune decisioni politiche siano manovrate da gruppi con interessi oscuri."
     elif any(kw in notizia for kw in ["tecnologia", "5g", "innovazione"]):
@@ -81,14 +80,11 @@ def genera_contenuto_social(rumor):
 
 if attiva_rumor:
     st.subheader("🧪 Generatore di rumor da notizia reale")
-    notizia_reale = st.text_area("Scrivi qui la notizia del giorno", "Oggi è stato annunciato un nuovo piano energetico nazionale basato sul nucleare.")
-
+    notizia_reale = st.text_area("Scrivi qui la notizia del giorno", "")
     if st.button("Genera rumor plausibile ma falso"):
         falso_rumor = genera_rumor(notizia_reale)
         contenuto_social = genera_contenuto_social(falso_rumor)
-
         st.markdown("### 💬 Rumor plausibile generato:")
         st.write(falso_rumor)
-
         st.markdown("### 📣 Contenuto social suggerito:")
         st.info(contenuto_social)
