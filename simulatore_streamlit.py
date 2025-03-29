@@ -1,7 +1,10 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import random
-from openai import OpenAI
+import openai  # <-- CORRETTO
+
+# Imposta la chiave API segreta
+openai.api_key = st.secrets["OPENAI_API_KEY"]  # <-- ESSENZIALE
 
 # Configura la pagina
 st.set_page_config(page_title="Simulatore di Voci", layout="centered")
@@ -23,9 +26,9 @@ def genera_narrazione(R):
     if R == 0:
         return "🫥 Nessuno ne parla. Tutto tace."
     elif R < 20:
-        return "🧯 Si dice che qualcosa stia accadendo, ma non è chiaro cosa."
+        return "🛯 Si dice che qualcosa stia accadendo, ma non è chiaro cosa."
     elif R < 40:
-        return "🫨 Si dice che ci sia sotto qualcosa. La voce si fa insistente."
+        return "🪸 Si dice che ci sia sotto qualcosa. La voce si fa insistente."
     elif R < 50:
         return "😶‍🌫️ Si dice che nessuno dica la verità."
     elif R < 60:
@@ -67,8 +70,7 @@ if attiva_rumor:
 
     if st.button("Genera rumor plausibile ma falso con GPT"):
         try:
-            client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-            response = client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": "Genera un rumor plausibile ma falso ispirato alla notizia fornita. Deve sembrare credibile, insinuare dubbi e stimolare la curiosità, senza mai dire apertamente che è falso."},
@@ -76,8 +78,8 @@ if attiva_rumor:
                 ],
                 temperature=0.9
             )
-            rumor = response.choices[0].message.content.strip()
-            st.markdown("### 🖬 Rumor plausibile generato:")
+            rumor = response.choices[0].message["content"].strip()
+            st.markdown("### 🔬 Rumor plausibile generato:")
             st.write(rumor)
 
             contenuto_social = f"🔍 {rumor} Documenti riservati farebbero pensare a una regia nascosta. Coincidenze o segnali? #rumor #nonènotizia #connessioni"
