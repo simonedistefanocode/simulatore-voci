@@ -68,7 +68,7 @@ if attiva_rumor:
     if st.button("Genera rumor plausibile ma falso con GPT"):
         try:
             openai.api_key = st.secrets["OPENAI_API_KEY"]
-            response = openai.chat.completions.create(
+            response = openai.ChatCompletions.create(
                 model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": "Genera un rumor plausibile ma falso ispirato alla notizia fornita. Deve sembrare credibile, insinuare dubbi e stimolare la curiosità, senza mai dire apertamente che è falso."},
