@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import random
 import openai
 
+# Imposta la chiave API da secrets
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 # Configura la pagina
@@ -72,17 +73,25 @@ if attiva_rumor:
             response = openai.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
-                    {"role": "system", "content": "Genera un rumor plausibile ma falso ispirato alla notizia fornita. Deve sembrare credibile, insinuare dubbi e stimolare la curiosità, senza mai dire apertamente che è falso."},
+                    {
+                        "role": "system",
+                        "content": (
+                            "Genera un rumor plausibile ma falso ispirato alla notizia fornita. "
+                            "Deve sembrare credibile, insinuare dubbi e stimolare la curiosità, "
+                            "senza mai dire apertamente che è falso."
+                        )
+                    },
                     {"role": "user", "content": notizia_reale}
                 ],
                 temperature=0.9
             )
             rumor = response.choices[0].message.content.strip()
-            st.markdown("### 🖬 Rumor plausibile generato:")
+            st.markdown("### 💬 Rumor plausibile generato:")
             st.write(rumor)
 
             contenuto_social = f"🔍 {rumor} Documenti riservati farebbero pensare a una regia nascosta. Coincidenze o segnali? #rumor #nonènotizia #connessioni"
             st.markdown("### 📣 Contenuto social suggerito:")
             st.info(contenuto_social)
+
         except Exception as e:
             st.error(f"Errore nella chiamata a OpenAI:\n{e}")
