@@ -1,33 +1,31 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import random
-import openai
+from openai import OpenAI
 
-# === CONFIGURAZIONE ===
+# Configura la pagina
 st.set_page_config(page_title="Simulatore di Voci", layout="centered")
-st.title("🧠 Simulatore Narrativo di Voci\n(Shibutani R = i × a)")
+
+# Titolo principale
+st.title("\U0001f9e0 Simulatore Narrativo di Voci")
+st.markdown("(Shibutani R = i × a)")
 st.write("Simula la propagazione di una voce in base all'importanza (i) e all'ambiguità (a)")
 
-# === API Key OpenAI ===
-openai_api_key = st.sidebar.text_input("🔑 Inserisci la tua OpenAI API Key", type="password")
-if openai_api_key:
-    openai.api_key = openai_api_key
-
-# === Input utente ===
-titolo_voce = st.text_input("Titolo della voce", "")
+# === Input dell'utente ===
+titolo_voce = st.text_input("Titolo della voce", "Gli alieni sono tra noi")
 importanza = st.slider("Importanza (i)", 0, 10, 5)
 ambiguita = st.slider("Ambiguità (a)", 0, 10, 5)
 giorni = st.slider("Giorni di propagazione", 3, 15, 7)
 mitica = st.checkbox("Forza modalità mitica se R = 0")
 
-# === Funzione narrazione ===
+# === Funzione per generare narrazione ===
 def genera_narrazione(R):
     if R == 0:
         return "🫥 Nessuno ne parla. Tutto tace."
     elif R < 20:
-        return "🤫 Si dice che qualcosa stia accadendo, ma non è chiaro cosa."
+        return "🧯 Si dice che qualcosa stia accadendo, ma non è chiaro cosa."
     elif R < 40:
-        return "🤨 Si dice che ci sia sotto qualcosa. La voce si fa insistente."
+        return "🫨 Si dice che ci sia sotto qualcosa. La voce si fa insistente."
     elif R < 50:
         return "😶‍🌫️ Si dice che nessuno dica la verità."
     elif R < 60:
@@ -43,12 +41,13 @@ def genera_narrazione(R):
 st.markdown("---\n🧵 **Narrazione Giorno per Giorno**")
 R_valori = []
 for giorno in range(1, giorni + 1):
-    if importanza * ambiguita:
-        R_giorno = importanza * ambiguita + random.randint(-5, 5)
+    if R := importanza * ambiguita:
+        R_giorno = R + random.randint(-5, 5)
     else:
         R_giorno = 0 if not mitica else random.randint(40, 80)
     R_valori.append(R_giorno)
-    st.markdown(f"**Giorno {giorno}:** R={R_giorno}. {genera_narrazione(R_giorno)}")
+    narrazione = genera_narrazione(R_giorno)
+    st.markdown(f"**Giorno {giorno}:** R={R_giorno}. {narrazione}")
 
 # === Grafico ===
 fig, ax = plt.subplots()
@@ -58,43 +57,31 @@ ax.set_xlabel("Giorni")
 ax.set_ylabel("R = i × a")
 st.pyplot(fig)
 
-# === GENERATORE RUMOR GPT ===
+# === Generatore di rumor da notizia reale ===
 st.markdown("---")
-attiva_rumor = st.checkbox("✅ Attiva modalità crea rumor da notizia reale")
+attiva_rumor = st.checkbox("Attiva modalità crea rumor da notizia reale", value=True)
 
 if attiva_rumor:
     st.subheader("🧪 Generatore di rumor da notizia reale")
     notizia_reale = st.text_area("Scrivi qui la notizia del giorno")
 
-    if st.button("Genera rumor plausibile ma falso con GPT") and openai_api_key and notizia_reale:
-        prompt = f"""
-        Leggi questa notizia reale: "{notizia_reale}"
-        Genera un rumor plausibile ma falso, come se fosse nato online da dubbi, interpretazioni errate o allusioni.
-        Poi scrivi un possibile post social che lo alimenta, usando tono insinuante e hashtag adatti (#verità, #dubbi, #nonènutizia).
-        
-        Restituisci in questo formato:
-        RUMOR: ...
-        SOCIAL: ...
-        """
-
+    if st.button("Genera rumor plausibile ma falso con GPT"):
         try:
-            response = openai.ChatCompletion.create(
+            client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+            response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=300,
+                messages=[
+                    {"role": "system", "content": "Genera un rumor plausibile ma falso ispirato alla notizia fornita. Deve sembrare credibile, insinuare dubbi e stimolare la curiosità, senza mai dire apertamente che è falso."},
+                    {"role": "user", "content": notizia_reale}
+                ],
                 temperature=0.9
             )
+            rumor = response.choices[0].message.content.strip()
+            st.markdown("### 🖬 Rumor plausibile generato:")
+            st.write(rumor)
 
-            output = response.choices[0].message.content.strip()
-            rumor, social = output.split("SOCIAL:")
-
-            st.markdown("### 💬 Rumor plausibile generato:")
-            st.write(rumor.replace("RUMOR:", "").strip())
-
+            contenuto_social = f"🔍 {rumor} Documenti riservati farebbero pensare a una regia nascosta. Coincidenze o segnali? #rumor #nonènotizia #connessioni"
             st.markdown("### 📣 Contenuto social suggerito:")
-            st.info(social.strip())
-
+            st.info(contenuto_social)
         except Exception as e:
-            st.error(f"Errore nella chiamata a OpenAI: {e}")
-    elif not openai_api_key:
-        st.warning("🔐 Inserisci la tua OpenAI API key nella barra laterale per generare il rumor.")
+            st.error(f"Errore nella chiamata a OpenAI:\n{e}")
