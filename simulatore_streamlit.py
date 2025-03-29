@@ -1,9 +1,10 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import random
-from openai import OpenAI  # ✅ Import corretto per openai>=1.0.0
+import openai
 
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])  # ✅ Inizializzazione del client
+# Configura la chiave OpenAI (versione 0.28 compatibile con Streamlit Cloud)
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 # Configura la pagina
 st.set_page_config(page_title="Simulatore di Voci", layout="centered")
@@ -69,7 +70,7 @@ if attiva_rumor:
 
     if st.button("Genera rumor plausibile ma falso con GPT"):
         try:
-            response = client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": "Genera un rumor plausibile ma falso ispirato alla notizia fornita. Deve sembrare credibile, insinuare dubbi e stimolare la curiosità, senza mai dire apertamente che è falso."},
@@ -77,7 +78,7 @@ if attiva_rumor:
                 ],
                 temperature=0.9
             )
-            rumor = response.choices[0].message.content.strip()
+            rumor = response.choices[0].message["content"].strip()
 
             st.markdown("### 💬 Rumor plausibile generato:")
             st.write(rumor)
