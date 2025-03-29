@@ -1,10 +1,9 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import random
-import openai
+from openai import OpenAI  # ✅ Import corretto per openai>=1.0.0
 
-# Usa il client OpenAI moderno (v1.x)
-client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])  # ✅ Inizializzazione del client
 
 # Configura la pagina
 st.set_page_config(page_title="Simulatore di Voci", layout="centered")
