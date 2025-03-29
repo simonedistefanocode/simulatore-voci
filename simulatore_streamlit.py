@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import random
 import openai
 
+# Usa il client OpenAI moderno (v1.x)
+client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+
 # Configura la pagina
 st.set_page_config(page_title="Simulatore di Voci", layout="centered")
 
@@ -67,8 +70,7 @@ if attiva_rumor:
 
     if st.button("Genera rumor plausibile ma falso con GPT"):
         try:
-            openai.api_key = st.secrets["OPENAI_API_KEY"]
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": "Genera un rumor plausibile ma falso ispirato alla notizia fornita. Deve sembrare credibile, insinuare dubbi e stimolare la curiosità, senza mai dire apertamente che è falso."},
@@ -77,6 +79,7 @@ if attiva_rumor:
                 temperature=0.9
             )
             rumor = response.choices[0].message.content.strip()
+
             st.markdown("### 💬 Rumor plausibile generato:")
             st.write(rumor)
 
