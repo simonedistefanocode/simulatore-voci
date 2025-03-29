@@ -57,14 +57,34 @@ st.pyplot(fig)
 st.markdown("---")
 attiva_rumor = st.checkbox("Attiva modalità crea rumor da notizia reale")
 
+# === Funzione per generare rumor plausibile ===
+def genera_rumor(notizia):
+    notizia = notizia.lower()
+    if any(word in notizia for word in ["energia", "nucleare", "elettricità"]):
+        return "Si dice che dietro il piano energetico ci sia un accordo con aziende estere che stanno segretamente comprando il controllo delle infrastrutture."
+    elif any(word in notizia for word in ["governo", "ministro", "politica"]):
+        return "Si dice che alcune decisioni del governo siano influenzate da lobby internazionali mai ufficialmente registrate."
+    elif any(word in notizia for word in ["AI", "intelligenza artificiale", "robot", "algoritmi", "openai", "chatgpt"]):
+        return "Si dice che alcune aziende abbiano già creato una AI senziente, ma stiano insabbiando tutto per motivi di sicurezza."
+    elif any(word in notizia for word in ["hacker", "cyberattacco", "violazione", "spyware", "dark web"]):
+        return "Si dice che il recente attacco informatico sia stato solo una distrazione per un furto dati più grande ancora nascosto."
+    elif any(word in notizia for word in ["salute", "vaccino", "virus", "malattia"]):
+        return "Si dice che la nuova terapia sia in realtà un esperimento segreto per controllare il comportamento umano."
+    elif any(word in notizia for word in ["cold case", "omicidio", "scomparsa", "verità", "cospirazione"]):
+        return "Si dice che le indagini siano state bloccate per proteggere figure importanti coinvolte."
+    else:
+        return "Si dice che dietro la notizia si nasconda una verità che non vogliono farci sapere."
+
+def genera_contenuto_social(rumor):
+    return f"🚨 {rumor} Alcuni documenti trapelati suggeriscono una regia occulta dietro le decisioni ufficiali. #dubbi #verità #potere"
+
 if attiva_rumor:
     st.subheader("🧪 Generatore di rumor da notizia reale")
     notizia_reale = st.text_area("Scrivi qui la notizia del giorno", "Oggi è stato annunciato un nuovo piano energetico nazionale basato sul nucleare.")
 
     if st.button("Genera rumor plausibile ma falso"):
-        # Logica semplice simulata per esempio
-        falso_rumor = "Si dice che dietro il nuovo piano energetico ci sia un accordo segreto con aziende private estere per il controllo delle risorse nazionali."
-        contenuto_social = f"🚨 {falso_rumor} Alcuni documenti trapelati lascerebbero intendere una regia occulta dietro questa decisione. E se fosse tutto già deciso da tempo? #energia #segreti #potere"
+        falso_rumor = genera_rumor(notizia_reale)
+        contenuto_social = genera_contenuto_social(falso_rumor)
 
         st.markdown("### 💬 Rumor plausibile generato:")
         st.write(falso_rumor)
