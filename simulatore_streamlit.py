@@ -4,7 +4,7 @@ import random
 
 st.set_page_config(page_title="Simulatore di Voci", layout="centered")
 
-st.title("🧠 Simulatore Narrativo di Voci\n(Shibutani R = i × a)")
+st.title("\U0001f9e0 Simulatore Narrativo di Voci\n(Shibutani R = i × a)")
 st.write("Simula la propagazione di una voce in base all'importanza (i) e all'ambiguità (a)")
 
 # === Input dell'utente ===
@@ -17,24 +17,24 @@ mitica = st.checkbox("Forza modalità mitica se R = 0")
 # === Funzione per generare narrazione ===
 def genera_narrazione(R):
     if R == 0:
-        return "🫥 Nessuno ne parla. Tutto tace."
+        return "\U0001fae5 Nessuno ne parla. Tutto tace."
     elif R < 20:
-        return "🤫 Si dice che qualcosa stia accadendo, ma non è chiaro cosa."
+        return "\U0001f92b Si dice che qualcosa stia accadendo, ma non è chiaro cosa."
     elif R < 40:
-        return "🤨 Si dice che ci sia sotto qualcosa. La voce si fa insistente."
+        return "\U0001f928 Si dice che ci sia sotto qualcosa. La voce si fa insistente."
     elif R < 50:
-        return "😶‍🌫️ Si dice che nessuno dica la verità."
+        return "\U0001f636‍\U0001f32b️ Si dice che nessuno dica la verità."
     elif R < 60:
-        return "🌀 Si dice che tutto sia solo la punta dell’iceberg."
+        return "\U0001f300 Si dice che tutto sia solo la punta dell’iceberg."
     elif R < 70:
-        return "🧩 Si dice che qualcuno stia nascondendo qualcosa di grosso."
+        return "\U0001f9e9 Si dice che qualcuno stia nascondendo qualcosa di grosso."
     elif R < 90:
-        return "🗣️ Si dice che tutti inizino a parlarne, ma ognuno ha una versione diversa."
+        return "\U0001f5e3️ Si dice che tutti inizino a parlarne, ma ognuno ha una versione diversa."
     else:
-        return "🔥 Si dice che sia ormai fuori controllo. La voce diventa leggenda."
+        return "\U0001f525 Si dice che sia ormai fuori controllo. La voce diventa leggenda."
 
 # === Simulazione della propagazione ===
-st.markdown("---\n🧵 **Narrazione Giorno per Giorno**")
+st.markdown("""---\n\U0001f9f5 **Narrazione Giorno per Giorno**""")
 for giorno in range(1, giorni + 1):
     if R := importanza * ambiguita:
         R_giorno = R + random.randint(-5, 5)
@@ -53,38 +53,53 @@ ax.set_xlabel("Giorni")
 ax.set_ylabel("R = i × a")
 st.pyplot(fig)
 
-# === Generatore di rumor da notizia reale ===
+# === Sezione: Generatore di rumor da notizia reale ===
 st.markdown("---")
 attiva_rumor = st.checkbox("Attiva modalità crea rumor da notizia reale")
 
+# === Funzione per generare rumor plausibile ===
 def genera_rumor(notizia):
-    notizia = notizia.lower()
-    if any(kw in notizia for kw in ["energia", "clima", "nucleare"]):
-        return "Si dice che dietro il piano energetico ci sia un accordo segreto con aziende estere per il controllo delle risorse."
-    elif any(kw in notizia for kw in ["governo", "politica", "decreto", "ministro"]):
-        return "Si dice che alcune decisioni politiche siano manovrate da gruppi con interessi oscuri."
-    elif any(kw in notizia for kw in ["tecnologia", "5g", "innovazione"]):
-        return "Si dice che dietro l'innovazione si nascondano tecnologie di controllo sociale."
-    elif any(kw in notizia for kw in ["salute", "vaccino", "pandemia"]):
-        return "Si dice che alcune cure siano state nascoste per interessi farmaceutici."
-    elif any(kw in notizia for kw in ["ai", "intelligenza artificiale", "hacker", "cyber", "sicurezza", "informatica"]):
-        return "Si dice che un algoritmo di intelligenza artificiale stia agendo senza controllo umano."
-    elif any(kw in notizia for kw in ["omicidio", "crimine", "cold case"]):
-        return "Si dice che il caso irrisolto sia legato a una rete di coperture insospettabili."
+    notizia_bassa = notizia.lower()
+
+    if any(kw in notizia_bassa for kw in ["energia", "gas", "petrolio", "nucleare"]):
+        return "Si dice che dietro il nuovo piano energetico ci sia un accordo segreto con aziende estere per il controllo delle risorse."
+    elif any(kw in notizia_bassa for kw in ["governo", "politica", "decreto", "parlamento"]):
+        return "Si dice che alcune decisioni siano state prese in ambienti ristretti, lontani dal controllo democratico."
+    elif any(kw in notizia_bassa for kw in ["virus", "covid", "vaccino", "sanità", "ospedale"]):
+        return "Si dice che alcuni laboratori stessero studiando queste mutazioni da tempo, senza informare il pubblico."
+    elif any(kw in notizia_bassa for kw in ["ai", "intelligenza artificiale", "hacker", "cyber", "dati", "algoritmi"]):
+        return "Si dice che una falla nell’algoritmo abbia permesso a gruppi esterni di accedere a dati sensibili senza lasciare tracce."
+    elif any(kw in notizia_bassa for kw in ["omicidio", "scomparsa", "crimine", "inchiesta", "indagine"]):
+        return "Si dice che ci siano troppe coincidenze e che qualcuno stia cercando di insabbiare i veri responsabili."
     else:
         return "Si dice che dietro le apparenze si nasconda una verità che pochi vogliono vedere."
 
 def genera_contenuto_social(rumor):
-    hashtag = "#verità #svelata #dubbi" if "verità" in rumor else "#mistero #rumor #attualità"
-    return f"🔍 {rumor} Alcuni dettagli non tornano e il dubbio cresce. Coincidenze o segnali? {hashtag}"
+    hook = random.choice([
+        "Alcuni dettagli non tornano e il dubbio cresce.",
+        "Documenti riservati farebbero pensare a una regia nascosta.",
+        "Le coincidenze iniziano a essere troppe.",
+        "E se fosse tutto già deciso da tempo?",
+    ])
+    hashtag = random.choice([
+        "#verità #segreti #dubbio",
+        "#rumor #nonènutizia #connessioni",
+        "#whistleblower #misteri #inquietudine",
+        "#fakenews #controllo #dietrolequinte",
+    ])
+    return f"🔍 {rumor} {hook} {hashtag}"
 
+# === Blocchi del rumor ===
 if attiva_rumor:
-    st.subheader("🧪 Generatore di rumor da notizia reale")
-    notizia_reale = st.text_area("Scrivi qui la notizia del giorno", "")
+    st.subheader("\U0001f9ea Generatore di rumor da notizia reale")
+    notizia_reale = st.text_area("Scrivi qui la notizia del giorno", "Oggi è stato annunciato un nuovo piano energetico nazionale basato sul nucleare.")
+
     if st.button("Genera rumor plausibile ma falso"):
-        falso_rumor = genera_rumor(notizia_reale)
-        contenuto_social = genera_contenuto_social(falso_rumor)
-        st.markdown("### 💬 Rumor plausibile generato:")
-        st.write(falso_rumor)
-        st.markdown("### 📣 Contenuto social suggerito:")
+        rumor_generato = genera_rumor(notizia_reale)
+        contenuto_social = genera_contenuto_social(rumor_generato)
+
+        st.markdown("### \U0001f4ac Rumor plausibile generato:")
+        st.write(rumor_generato)
+
+        st.markdown("### \U0001f4e3 Contenuto social suggerito:")
         st.info(contenuto_social)
