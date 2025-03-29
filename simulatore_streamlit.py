@@ -34,7 +34,7 @@ def genera_narrazione(R):
         return "🔥 Si dice che sia ormai fuori controllo. La voce diventa leggenda."
 
 # === Simulazione della propagazione ===
-st.markdown("""---\n🧵 **Narrazione Giorno per Giorno**""")
+st.markdown("---\n🧵 **Narrazione Giorno per Giorno**")
 for giorno in range(1, giorni + 1):
     if R := importanza * ambiguita:
         R_giorno = R + random.randint(-5, 5)
@@ -60,23 +60,24 @@ attiva_rumor = st.checkbox("Attiva modalità crea rumor da notizia reale")
 # === Funzione per generare rumor plausibile ===
 def genera_rumor(notizia):
     notizia = notizia.lower()
-    if any(word in notizia for word in ["energia", "nucleare", "elettricità"]):
-        return "Si dice che dietro il piano energetico ci sia un accordo con aziende estere che stanno segretamente comprando il controllo delle infrastrutture."
-    elif any(word in notizia for word in ["governo", "ministro", "politica"]):
-        return "Si dice che alcune decisioni del governo siano influenzate da lobby internazionali mai ufficialmente registrate."
-    elif any(word in notizia for word in ["AI", "intelligenza artificiale", "robot", "algoritmi", "openai", "chatgpt"]):
-        return "Si dice che alcune aziende abbiano già creato una AI senziente, ma stiano insabbiando tutto per motivi di sicurezza."
-    elif any(word in notizia for word in ["hacker", "cyberattacco", "violazione", "spyware", "dark web"]):
-        return "Si dice che il recente attacco informatico sia stato solo una distrazione per un furto dati più grande ancora nascosto."
-    elif any(word in notizia for word in ["salute", "vaccino", "virus", "malattia"]):
-        return "Si dice che la nuova terapia sia in realtà un esperimento segreto per controllare il comportamento umano."
-    elif any(word in notizia for word in ["cold case", "omicidio", "scomparsa", "verità", "cospirazione"]):
-        return "Si dice che le indagini siano state bloccate per proteggere figure importanti coinvolte."
+    if any(kw in notizia for kw in ["energia", "clima", "nucleare"]):
+        return "Si dice che dietro il nuovo piano energetico ci sia un accordo segreto con aziende estere per il controllo delle risorse."
+    elif any(kw in notizia for kw in ["governo", "politica", "decreto", "ministro"]):
+        return "Si dice che alcune decisioni politiche siano manovrate da gruppi con interessi oscuri."
+    elif any(kw in notizia for kw in ["tecnologia", "5g", "innovazione"]):
+        return "Si dice che dietro l'innovazione si nascondano tecnologie di controllo sociale."
+    elif any(kw in notizia for kw in ["salute", "vaccino", "pandemia"]):
+        return "Si dice che alcune cure siano state nascoste per interessi farmaceutici."
+    elif any(kw in notizia for kw in ["ai", "intelligenza artificiale", "hacker", "cyber", "sicurezza", "informatica"]):
+        return "Si dice che un algoritmo di intelligenza artificiale stia agendo senza controllo umano."
+    elif any(kw in notizia for kw in ["omicidio", "crimine", "cold case"]):
+        return "Si dice che il caso irrisolto sia legato a una rete di coperture insospettabili."
     else:
-        return "Si dice che dietro la notizia si nasconda una verità che non vogliono farci sapere."
+        return "Si dice che dietro le apparenze si nasconda una verità che pochi vogliono vedere."
 
 def genera_contenuto_social(rumor):
-    return f"🚨 {rumor} Alcuni documenti trapelati suggeriscono una regia occulta dietro le decisioni ufficiali. #dubbi #verità #potere"
+    hashtag = "#verità #svelata #dubbi" if "verità" in rumor else "#mistero #rumor #attualità"
+    return f"🔍 {rumor} Alcuni dettagli non tornano e il dubbio cresce. Coincidenze o segnali? {hashtag}"
 
 if attiva_rumor:
     st.subheader("🧪 Generatore di rumor da notizia reale")
